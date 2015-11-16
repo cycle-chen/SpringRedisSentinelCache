@@ -1,111 +1,65 @@
 package com.spring.redis.sentinel.config;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+ 
+@Configuration
+@EnableCaching
+@PropertySource("classpath:/redisconfig.properites")
+public class RedisConfig {
+    private @Value("${host}") String redisHost;
+    private @Value("${port}") Integer redisPort;
+    private @Value("${connectionTimeout}") Integer connectionTimeout;
+    private @Value("${soTimeout}") Integer soTimeout;
+    private @Value("${password}") String password;    
+    private @Value("${database}") Integer database; 
+    private @Value("${password}") String clientName;    
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory(){
+        JedisConnectionFactory factory=new JedisConnectionFactory();
+        System.out.println(redisHost +" ," + redisPort);
+        factory.setHostName(redisHost);
+        factory.setPort(redisPort);
+        factory.setPassword(password);
+        factory.setDatabase(database);
+        factory.setTimeout(3000);
+        factory.setUsePool(true);
+        return factory;
+    }
+    
+    @Bean
+    public RedisTemplate<Object,Object> redisTemplate(){
+        RedisTemplate<Object,Object> redisTemplate=new RedisTemplate<Object, Object>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        return redisTemplate;
+    }
+    @Bean
+    public  Map<String,Long> cachedObjectValues(){
+        Map<String,Long> stringLongMap=new HashMap<String, Long>();
+        stringLongMap.put("cache1",200L);
+        return stringLongMap;
+    }
 
-import org.springframework.core.io.support.ResourcePropertySource;
+    @Bean
+    public CacheManager cacheManager(){
+        RedisCacheManager redisCacheManager=new RedisCacheManager(redisTemplate());
+        redisCacheManager.setExpires(cachedObjectValues());
 
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Protocol;
-
-/*
- * author:yaochong.chen
- */
-public class RedisConfig extends JedisPoolConfig {
-	private static final RedisConfig instance = new RedisConfig();
-	private String host = Protocol.DEFAULT_HOST;
-	private int port = Protocol.DEFAULT_PORT;
-	private int connectionTimeout = Protocol.DEFAULT_TIMEOUT;
-	private int soTimeout = Protocol.DEFAULT_TIMEOUT;
-	private String password;
-	private int database = Protocol.DEFAULT_DATABASE;
-	private String clientName;
-
-	public static RedisConfig getInstance() {
-		return instance;
-	}
-
-	private RedisConfig() {
-		try {
-			ResourcePropertySource r = new ResourcePropertySource(
-					"fsdfresources", "classpath:/redis.properties");
-			host = r.getProperty("host").toString();
-			port = Integer.getInteger(r.getProperty("port").toString());
-			connectionTimeout = Integer.getInteger(r.getProperty(
-					"connectionTimeout").toString());
-			soTimeout = Integer.getInteger(r.getProperty("soTimeout")
-					.toString());
-			password = r.getProperty("password").toString();
-			database = Integer.getInteger(r.getProperty("database").toString());
-			clientName = r.getProperty("clientName").toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		if ((host == null) || "".equals(host)) {
-			host = Protocol.DEFAULT_HOST;
-		}
-		this.host = host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		if ("".equals(password)) {
-			password = null;
-		}
-		this.password = password;
-	}
-
-	public int getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(int database) {
-		this.database = database;
-	}
-
-	public String getClientName() {
-		return clientName;
-	}
-
-	public void setClientName(String clientName) {
-		if ("".equals(clientName)) {
-			clientName = null;
-		}
-		this.clientName = clientName;
-	}
-
-	public int getConnectionTimeout() {
-		return connectionTimeout;
-	}
-
-	public void setConnectionTimeout(int connectionTimeout) {
-		this.connectionTimeout = connectionTimeout;
-	}
-
-	public int getSoTimeout() {
-		return soTimeout;
-	}
-
-	public void setSoTimeout(int soTimeout) {
-		this.soTimeout = soTimeout;
-	}
+        return redisCacheManager;
+    }
 
 }
