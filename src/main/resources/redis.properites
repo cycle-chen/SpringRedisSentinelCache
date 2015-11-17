@@ -1,5 +1,6 @@
 host=192.168.1.8
 port=26479
+master=mymaster
 connectionTimeout=5000
 soTimeout=5000
 password=
