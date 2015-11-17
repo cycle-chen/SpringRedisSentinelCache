@@ -13,6 +13,5 @@ public class HelloApp {
 			Thread.sleep(1000);
 			System.out.println(helloService.sayHello("ozgur"));
 		}
-
 	}
 }
