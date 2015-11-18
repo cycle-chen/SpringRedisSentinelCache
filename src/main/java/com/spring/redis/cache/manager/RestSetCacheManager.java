@@ -27,7 +27,6 @@ public class RestSetCacheManager extends RedisCacheManager {
 		long expiration = computeExpiration(cacheName);
 
 		return new RedisSetCache(cacheName, (isUsePrefix() ? getCachePrefix()
-				.prefix(cacheName) : null), getRedisOperations(), expiration,
-				redisReadOperations);
+				.prefix(cacheName) : null),getTemplate() , expiration);
 	}
 }

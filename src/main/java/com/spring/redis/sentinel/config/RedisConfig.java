@@ -56,19 +56,19 @@ public class RedisConfig {
 		redisTemplate.setConnectionFactory(jedisConnectionFactory());
 		return redisTemplate;
 	}
-
-	@Bean
-	public Map<String, Long> cachedObjectValues() {
-		Map<String, Long> stringLongMap = new HashMap<String, Long>();
-		stringLongMap.put("cache1", 200L);
-		return stringLongMap;
-	}
-
-	@Bean
-	public CacheManager cacheManager() {
-		RedisCacheManager redisCacheManager = new RedisCacheManager(
-				redisTemplate());
-		redisCacheManager.setExpires(cachedObjectValues());
-		return redisCacheManager;
-	}
+//
+//	@Bean
+//	public Map<String, Long> cachedObjectValues() {
+//		Map<String, Long> stringLongMap = new HashMap<String, Long>();
+//		stringLongMap.put("cache1", 200L);
+//		return stringLongMap;
+//	}
+//
+//	@Bean
+//	public CacheManager cacheManager() {
+//		RedisCacheManager redisCacheManager = new RedisCacheManager(
+//				redisTemplate());
+//		redisCacheManager.setExpires(cachedObjectValues());
+//		return redisCacheManager;
+//	}
 }
