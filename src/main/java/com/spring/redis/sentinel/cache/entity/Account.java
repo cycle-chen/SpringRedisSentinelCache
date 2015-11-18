@@ -9,7 +9,13 @@
  *----------------------------------------------------------------------------*/
 package com.spring.redis.sentinel.cache.entity;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
+	/**
+	 * TODO javadoc for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
 
@@ -32,4 +38,9 @@ public class Account {
 	public void setName(String name) {
 		this.name = name;
 	}
+	//
+	// @Override
+	// public String toString() {
+	// return this.name + this.id;
+	// }
 }

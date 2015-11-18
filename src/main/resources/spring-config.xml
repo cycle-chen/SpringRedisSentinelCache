@@ -6,18 +6,10 @@
     <context:annotation-config />
     <context:component-scan base-package="com.spring.redis.sentinel" />
     <cache:annotation-driven />
-      
-    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
-        <property name="usePrefix" value="true" />
-        <constructor-arg name="template" ref="redisTemplate" />
-        <property name="loadRemoteCachesOnStartup" value="true" />
-        <property name="defaultExpiration" value="360" />
-        <property name="expires">
-            <map>
-                <entry key="accountCache" value="360" />
-            </map>
-        </property>
-    </bean>
+    <!-- <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"> <property name="usePrefix" 
+        value="true" /> <constructor-arg name="template" ref="redisTemplate" /> <property name="loadRemoteCachesOnStartup" value="true" 
+        /> <property name="defaultExpiration" value="360" /> <property name="expires"> <map> <entry key="accountCache" value="360" 
+        /> </map> </property> </bean> -->
     <!-- <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager"> <property name="caches"> <set> 
         <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"> <property name="name" value="default"/> 
         </bean> <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"> <property name="name" value="accountCache"/> 

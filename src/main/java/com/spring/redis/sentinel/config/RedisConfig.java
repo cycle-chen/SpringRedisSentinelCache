@@ -1,11 +1,16 @@
 package com.spring.redis.sentinel.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,16 +57,18 @@ public class RedisConfig {
 		return redisTemplate;
 	}
 
-	/*
-	 * @Bean public Map<String, Long> cachedObjectValues() { Map<String, Long>
-	 * stringLongMap = new HashMap<String, Long>(); stringLongMap.put("cache1",
-	 * 200L); return stringLongMap; }
-	 * 
-	 * @Bean public CacheManager cacheManager() { RedisCacheManager
-	 * redisCacheManager = new RedisCacheManager( redisTemplate());
-	 * redisCacheManager.setExpires(cachedObjectValues());
-	 * 
-	 * return redisCacheManager; }
-	 */
+	@Bean
+	public Map<String, Long> cachedObjectValues() {
+		Map<String, Long> stringLongMap = new HashMap<String, Long>();
+		stringLongMap.put("cache1", 200L);
+		return stringLongMap;
+	}
 
+	@Bean
+	public CacheManager cacheManager() {
+		RedisCacheManager redisCacheManager = new RedisCacheManager(
+				redisTemplate());
+		redisCacheManager.setExpires(cachedObjectValues());
+		return redisCacheManager;
+	}
 }

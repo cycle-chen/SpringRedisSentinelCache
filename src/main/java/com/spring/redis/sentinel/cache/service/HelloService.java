@@ -1,4 +1,4 @@
-package com.spring.redis.sentinel.cache;
+package com.spring.redis.sentinel.cache.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

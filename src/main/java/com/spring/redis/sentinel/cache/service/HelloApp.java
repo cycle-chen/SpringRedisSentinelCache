@@ -1,4 +1,4 @@
-package com.spring.redis.sentinel.cache;
+package com.spring.redis.sentinel.cache.service;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

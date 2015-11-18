@@ -1,5 +1,9 @@
 package com.spring.redis;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,73 +16,79 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
-
 @Configuration
 public class RedisConfiguration {
 
-    @Value("${redis.hostname}") String hostname;
-    @Value("${redis.password}") String password;
-    @Value("${redis.port}") int port;
+	@Value("${redis.hostname}")
+	String hostname;
+	@Value("${redis.password}")
+	String password;
+	@Value("${redis.port}")
+	int port;
 
-    @Value("${redis.pool.maxTotal}") int maxTotal;
-    @Value("${redis.pool.maxIdle}") int maxIdle;
-    @Value("${redis.pool.maxWait}") int maxWait;
+	@Value("${redis.pool.maxTotal}")
+	int maxTotal;
+	@Value("${redis.pool.maxIdle}")
+	int maxIdle;
+	@Value("${redis.pool.maxWait}")
+	int maxWait;
 
-    @Value("${redis.sentinel.master}") String master;
-    @Value("${redis.sentinel.nodes}") String nodes;
-    @Value("${morning.is_product}") boolean isProduct;
+	@Value("${redis.sentinel.master}")
+	String master;
+	@Value("${redis.sentinel.nodes}")
+	String nodes;
+	@Value("${morning.is_product}")
+	boolean isProduct;
 
-    @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
+	@Bean
+	public JedisConnectionFactory redisConnectionFactory() {
 
-        if (isProduct) {
-            Set<String> sentinels = new HashSet<String>();
-            sentinels = this.stringConvertToSet(nodes);
-            RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration().master(master);
-            for (String sentinel : sentinels) {
-                String[] array = sentinel.split(":");
-                sentinelConfig.sentinel(array[0],Integer.valueOf(array[1]));
-            }
+		if (isProduct) {
+			Set<String> sentinels = new HashSet<String>();
+			sentinels = this.stringConvertToSet(nodes);
+			RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration()
+					.master(master);
+			for (String sentinel : sentinels) {
+				String[] array = sentinel.split(":");
+				sentinelConfig.sentinel(array[0], Integer.valueOf(array[1]));
+			}
 
-            return new JedisConnectionFactory(sentinelConfig);
-        } else {
-            JedisPoolConfig poolConfig = new JedisPoolConfig();
-            poolConfig.setMaxIdle(maxIdle);
-            poolConfig.setMaxWaitMillis(maxWait);
-            poolConfig.setMaxTotal(maxTotal);
+			return new JedisConnectionFactory(sentinelConfig);
+		} else {
+			JedisPoolConfig poolConfig = new JedisPoolConfig();
+			poolConfig.setMaxIdle(maxIdle);
+			poolConfig.setMaxWaitMillis(maxWait);
+			poolConfig.setMaxTotal(maxTotal);
 
-            JedisConnectionFactory jcf = new JedisConnectionFactory(poolConfig);
-            jcf.setHostName(hostname);
-            jcf.setPort(port);
-            jcf.setPassword(password);
-            jcf.setPoolConfig(poolConfig);
+			JedisConnectionFactory jcf = new JedisConnectionFactory(poolConfig);
+			jcf.setHostName(hostname);
+			jcf.setPort(port);
+			jcf.setPassword(password);
+			jcf.setPoolConfig(poolConfig);
 
-            return jcf;
-        }
-    }
+			return jcf;
+		}
+	}
 
-    @Bean
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public RedisTemplate redisTemplate() {
+	@Bean
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public RedisTemplate redisTemplate() {
 
-        RedisTemplate redisTemplate = new RedisTemplate();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+		RedisTemplate redisTemplate = new RedisTemplate();
+		redisTemplate.setConnectionFactory(redisConnectionFactory());
 
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        RedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
+		StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+		RedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
 
-        redisTemplate.setKeySerializer(stringRedisSerializer);
-        redisTemplate.setValueSerializer(jdkSerializer);
+		redisTemplate.setKeySerializer(stringRedisSerializer);
+		redisTemplate.setValueSerializer(jdkSerializer);
 
-        return redisTemplate;
-    }
-    
-	public Set<String> stringConvertToSet (String source) {
+		return redisTemplate;
+	}
+
+	public Set<String> stringConvertToSet(String source) {
 		Set<String> target = new HashSet<String>();
- 		StringTokenizer st = new StringTokenizer(source,",");
+		StringTokenizer st = new StringTokenizer(source, ",");
 		while (st.hasMoreElements()) {
 			target.add(st.nextElement().toString());
 		}
