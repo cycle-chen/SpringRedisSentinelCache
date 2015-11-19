@@ -23,7 +23,6 @@ public class RedisSetCache extends RedisCache {
 			long expiration) {
 		super(name, prefix, template, expiration);
 		this.redisTemplate = template;
-		System.out.println("name :" + name);
 	}
 	@Override
 	public void put(RedisCacheElement element) {
