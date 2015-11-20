@@ -25,8 +25,7 @@ public class RestSetCacheManager extends RedisCacheManager {
 	@SuppressWarnings("unchecked")
 	protected RedisCache createCache(String cacheName) {
 		long expiration = computeExpiration(cacheName);
-
 		return new RedisSetCache(cacheName, (isUsePrefix() ? getCachePrefix()
-				.prefix(cacheName) : null),getTemplate() , expiration);
+				.prefix(cacheName) : null), getTemplate(), expiration);
 	}
 }

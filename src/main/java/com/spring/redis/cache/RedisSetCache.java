@@ -14,21 +14,27 @@ import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheElement;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.support.collections.DefaultRedisSet;
 import org.springframework.data.redis.support.collections.DefaultRedisZSet;
+
 public class RedisSetCache extends RedisCache {
 	private RedisTemplate<String, Object> redisTemplate;
+
 	public RedisSetCache(String name, byte[] prefix,
-			RedisTemplate<String, Object> template,
-			long expiration) {
+			RedisTemplate<String, Object> template, long expiration) {
 		super(name, prefix, template, expiration);
 		this.redisTemplate = template;
-		System.out.println("name :" + name);
+		System.out.println(new String(prefix));
 	}
+
 	@Override
 	public void put(RedisCacheElement element) {
+		// super.put(element);
+		element.getKey().getKeyElement();
+		System.out.println(new String(element.getKeyBytes()));
 		RedisOperations<String, Object> op = redisTemplate;
-		DefaultRedisZSet<Object> rset = new DefaultRedisZSet<Object>(element.getKey().toString(), op);
+		DefaultRedisZSet<Object> rset = new DefaultRedisZSet<Object>(
+				new String(element.getKey().getKeyBytes()), op);
 		rset.add(element.get());
+		System.out.println(11);
 	}
 }

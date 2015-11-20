@@ -12,11 +12,12 @@
 		<constructor-arg ref="redisTemplate" />
 		<property name="loadRemoteCachesOnStartup" value="true" />
 		<property name="defaultExpiration" value="360" />
-		<property name="expires">
+<!-- 		<property name="expires">
 			<map>
 				<entry key="accountCache" value="360" />
+                <entry key="cache1" value="360"/>
 			</map>
-		</property>
+		</property> -->
 	</bean>
 	<!-- <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager"> 
 		<property name="caches"> <set> <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"> 

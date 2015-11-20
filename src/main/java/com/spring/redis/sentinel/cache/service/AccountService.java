@@ -35,4 +35,4 @@ public class AccountService {
 		// Todo query data from database
 		return Optional.fromNullable(new Account(accountName));
 	}
- }
+}
